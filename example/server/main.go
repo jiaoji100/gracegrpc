@@ -23,10 +23,10 @@ import (
 	"os"
 	"log"
 	"context"
+	pb "client-demo/helloworld"
 
 	"google.golang.org/grpc"
-	"github.com/jiaoji100/gracegrpc/gracegrpc"
-	pb "github.com/jiaoji100/gracegrpc/gracegrpc/example/helloworld"
+	"github.com/jiaoji100/gracegrpc"
 )
 
 const (
