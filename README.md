@@ -2,10 +2,7 @@
 ```
 平滑重启golang gRPC server，重启过程不丢流量。类似facebook的gracehttp
 ```
-## 为什么自己写
-```textmate
-网上没找到现成的
-```
+
 ## 使用
 #### 平滑重启进程
 ```shell script
