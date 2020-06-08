@@ -23,6 +23,7 @@ var (
 	didInherit = os.Getenv(listenerFilename) != ""
 	ppid       = os.Getppid()
 )
+
 type app struct {
 	listener net.Listener
 	server   *grpc.Server
@@ -54,7 +55,7 @@ func Serve(server *grpc.Server, addr string) error {
 	return a.run()
 }
 
-func (a *app) run() (err error) {
+func (a *app) run() error {
 
 	//serve
 	go func() {
