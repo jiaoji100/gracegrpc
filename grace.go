@@ -19,6 +19,10 @@ import (
 
 const listenerFilename = "LISTENER-FILENAME"
 
+var (
+	didInherit = os.Getenv(listenerFilename) != ""
+	ppid       = os.Getppid()
+)
 type app struct {
 	listener net.Listener
 	server   *grpc.Server
@@ -60,6 +64,12 @@ func (a *app) run() (err error) {
 			panic(err)
 		}
 	}()
+	// Close the parent if we inherited and it wasn't init that started us.
+	if didInherit && ppid != 1 {
+		if err := syscall.Kill(ppid, syscall.SIGTERM); err != nil {
+			return fmt.Errorf("failed to close parent: %s", err)
+		}
+	}
 
 	a.waitForSignals()
 	return nil
@@ -67,9 +77,8 @@ func (a *app) run() (err error) {
 
 // 继承或创建listener
 func inheritOrCreateListener(addr string) (net.Listener, error) {
-	ln, err := inheritListener()
-	if err == nil {
-		return ln, nil
+	if didInherit {
+		return inheritListener()
 	}
 
 	return createListener(addr)
@@ -121,9 +130,6 @@ func (a *app) waitForSignals() {
 				continue
 			}
 			log.Printf("Forked child %v\n", child.Pid)
-			a.server.GracefulStop()
-			log.Printf("Quit father %v\n", os.Getpid())
-			return
 
 		case syscall.SIGINT, syscall.SIGTERM:
 			signal.Stop(signalCh)
