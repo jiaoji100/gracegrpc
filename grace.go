@@ -159,7 +159,7 @@ func forkChild(ln net.Listener) (*os.Process, error) {
 		return nil, err
 	}
 
-	// 标准输入、标准输出、标准错误输出、当前进程的listener的文件描述符，4个文件传递给进程
+	// 标准输入、标准输出、标准错误输出、当前进程的listener的文件描述符，4个文件传递给子进程
 	files := []*os.File{os.Stdin, os.Stdout, os.Stderr, lnFile}
 
 	// 启动子进程
